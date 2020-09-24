@@ -73,14 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions=[
    //Transaction(id: 'shoe', title: 'shoe', amount: 1204, date: DateTime.now())
   ];
-  List<Transaction> get _recentTransactions {
+  List<Transaction> _recentTransactions=[];
+  /*List<Transaction> get _recentTransactions {
+    print("recent transaction changed");
     return _userTransactions.where((tx){
       return tx.date.isAfter(DateTime.now().subtract(
           Duration(days:7),
         ),
       );
     }).toList();
-  }
+  }*/
 
   void _addNewTransaction(String txtitle,double amount,DateTime chosenDate) {
     final newTx=Transaction(
@@ -95,11 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
   void _startAddNewTransaction(BuildContext ctx) {
-    print("context 1");
-    print(ctx);
     showModalBottomSheet(context: ctx, builder: (bctx){
-      print("context 2");
-      print(bctx);
       return NewTransaction(_addNewTransaction);
     });
   }
@@ -112,11 +110,18 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void generateRecentTransaction() {
+    _recentTransactions=[];
+    for(var i=0;i<_userTransactions.length;i++) {
+      if(_userTransactions[i].date.isAfter(DateTime.now().subtract(Duration(days:7),))) {
+        _recentTransactions.add(_userTransactions[i]);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("inside build");
-    print("recent transaction");
-    print(_recentTransactions);
+    generateRecentTransaction();
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter App'),
