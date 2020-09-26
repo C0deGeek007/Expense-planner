@@ -85,9 +85,15 @@ class _NewTransactionState extends State<NewTransaction> {
   Widget build(BuildContext context) {
     print("new transaction build context");
     print(context);
-    return  Card(
+    return SingleChildScrollView(
+      child:  Card(
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+              ),
               child: Column(
                 children: [
                   TextField(decoration: InputDecoration(labelText: 'Title'),
@@ -132,6 +138,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 ],
               )
             ),
-          );
+          )
+      );
   }
 }

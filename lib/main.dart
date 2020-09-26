@@ -1,10 +1,15 @@
 import 'package:expense_planner/widgets/new_transaction.dart';
 import 'package:expense_planner/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import './widgets/chart.dart';
 
 import './models/transaction.dart';
-void main() => runApp(MyApp());
+void main() {
+ /*  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]); */
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -70,6 +75,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false; 
   final List<Transaction> _userTransactions=[
    //Transaction(id: 'shoe', title: 'shoe', amount: 1204, date: DateTime.now())
   ];
@@ -114,11 +120,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("inside build");
-    print("recent transaction");
-    print(_recentTransactions);
-    return Scaffold(
-      appBar: AppBar(
+    final isLandscape= MediaQuery.of(context).orientation==Orientation.landscape;
+    final appBar= AppBar(
         title: Text('Flutter App'),
         actions: [
           IconButton(
@@ -128,12 +131,46 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             )
         ],
-      ),
+      );
+    
+    final txList= Container(
+            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height-MediaQuery.of(context).padding.top)*1,
+            child:TransactionList(_userTransactions,_deleteTransaction),
+          );
+    print("inside build");
+    print("recent transaction");
+    print(_recentTransactions);
+    return Scaffold(
+      appBar:appBar,
       body: SingleChildScrollView(child:
       Column(
         children: [
-         Chart(_recentTransactions),
-          TransactionList(_userTransactions,_deleteTransaction),
+          if(isLandscape) Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Show chart'),
+              Switch.adaptive(value: _showChart, onChanged:(value){
+                setState(() {
+                  _showChart=value;
+                });
+              })
+            ],
+          ),
+
+          if(!isLandscape)  Container(
+            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height-MediaQuery.of(context).padding.top)*0.3,
+            child: Chart(_recentTransactions),
+          ),
+
+          if(!isLandscape)  txList,
+
+          if(isLandscape) _showChart ? 
+          Container(
+            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height-MediaQuery.of(context).padding.top)*0.7,
+            child: Chart(_recentTransactions),
+          ) : txList
+         
+          
         ],
        ),
       ),
