@@ -7,24 +7,20 @@ class TransactionList extends StatelessWidget {
   TransactionList(this.transactions,this.deleteTx);
   @override
   Widget build(BuildContext context) {
-    print("inside transaction list");
-    print(context);
-    print(Theme.of(context));
-    return Container(
-      height: 500,
-      child: transactions.isEmpty ? Column(
-        children: [
-          Text('No transaction added yet',style: TextStyle(fontWeight: FontWeight.bold),),
-          SizedBox(
-            height: 100,
-          ),
-          Container(
-            height: 200,
-            child:Image.asset('assets/images/waiting.png',fit: BoxFit.cover,),
-          )
-          
-        ],
-      ) : ListView.builder(
+      return transactions.isEmpty ? LayoutBuilder(builder: (ctx,constraints) {
+        return Column(
+          children: [
+            Text('No transaction added yet',style: TextStyle(fontWeight: FontWeight.bold),),
+            SizedBox(
+              height: 100,
+            ),
+            Container(
+              height: constraints.maxHeight*0.5,
+              child:Image.asset('assets/images/waiting.png',fit: BoxFit.cover,),
+           )  
+          ],
+        );
+      })  : ListView.builder(
         itemBuilder: (ctx,index){
           return Card(
             elevation: 5,
@@ -56,8 +52,7 @@ class TransactionList extends StatelessWidget {
           );
         },
         itemCount: transactions.length,
-      ),
-    );
+      );
   }
 }
 
